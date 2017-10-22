@@ -17,21 +17,28 @@ namespace TheNote.DataLayer.Sql
             _connectionString = connectionString;
         }
 
-        public Note Create(Note note)
+        public Note Create(Guid UserID, string title)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
             {
                 sqlConnection.Open();
                 using (var command = sqlConnection.CreateCommand())
                 {
-                    note.ID = Guid.NewGuid();
-                    command.CommandText = "insert into notes (id, title, textcontent, createdate, changedate) " +
-                        "values (@id, @title, @textcontent, @createdate, @updatedate)";
+                    var note = new Note
+                    {
+                        ID = Guid.NewGuid(),
+                        Title = title
+                    };
+
+                    
+                    command.CommandText = "insert into notes (id, title, textcontent, createdate, changedate, userid) " +
+                        "values (@id, @title, @textcontent, @createdate, @updatedate, @userid)";
                     command.Parameters.AddWithValue("@id", note.ID);
                     command.Parameters.AddWithValue("@title", note.Title);
                     command.Parameters.AddWithValue("@textcontent", note.TextContent);
                     command.Parameters.AddWithValue("@createdate", note.Create.GetDateTimeFormats());
-                    command.Parameters.AddWithValue("@changedate", note.Change.GetDateTimeFormats());
+                    command.Parameters.AddWithValue("@changedate", note.Update.GetDateTimeFormats());
+                    command.Parameters.AddWithValue("@userid", UserID);
                     command.ExecuteNonQuery();
 
                     return note;
@@ -52,28 +59,26 @@ namespace TheNote.DataLayer.Sql
              }
         }
 
-        public Note Get(Guid id)
+        public IEnumerable<Note> GetUserNotes(Guid UserID)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
             {
                 sqlConnection.Open();
                 using (var command = sqlConnection.CreateCommand())
                 {
-                    command.CommandText = "select id, title from note where id = @id";
-                    command.Parameters.AddWithValue("@id", id);
+                    command.CommandText = "select id, title, textcontent, createdate, updatedate from notes where userid = @userid";
+                    command.Parameters.AddWithValue("@userid", UserID);
 
                     using (var reader = command.ExecuteReader())
                     {
-                        if (!reader.Read())
-                            throw new ArgumentException($"Заметка с id {id} не найден");
-
-                        var note = new Note
+                        while (reader.Read())
                         {
-                            ID = reader.GetGuid(reader.GetOrdinal("id")),
-                            Title = reader.GetString(reader.GetOrdinal("title"))
-                        };
-
-                        return note;
+                            yield return new Note
+                            {
+                                ID = reader.GetGuid(reader.GetOrdinal("id")),
+                                Title = reader.GetString(reader.GetOrdinal("title"))
+                            }; 
+                        }
                     }
                 }
             }

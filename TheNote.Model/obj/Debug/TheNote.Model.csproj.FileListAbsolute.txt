@@ -1,0 +1,2 @@
+D:\work\TheNote\TheNote.Model\obj\Debug\TheNote.Model.csprojResolveAssemblyReference.cache
+D:\work\TheNote\TheNote.Model\obj\Debug\TheNote.Model.csproj.CoreCompileInputs.cache

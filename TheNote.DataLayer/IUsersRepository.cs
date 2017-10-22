@@ -10,7 +10,9 @@ namespace TheNote.DataLayer
     public interface IUsersRepository
     {
         User Create (User user);
+
         void Delete(Guid ID);
+
         User Get(Guid ID);
     }
 }

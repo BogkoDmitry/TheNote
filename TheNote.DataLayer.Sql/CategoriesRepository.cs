@@ -18,18 +18,24 @@ namespace TheNote.DataLayer.Sql
             _connectionString = connectionString;
         }
 
-        public Category Create(Category category)
+        public Category Create(Guid UserID, string name)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
             {
                 sqlConnection.Open();
                 using (var command = sqlConnection.CreateCommand())
                 {
-                    category.ID = Guid.NewGuid();
-                    command.CommandText = "insert into categories (id, name, description) values (@id, @name, @description)";
-                    command.Parameters.AddWithValue("@id", category.ID);
+
+                    command.CommandText = "insert into categories (id, name, userid) values (@id, @name, @userid)";
+                    var category = new Category
+                    {
+                        ID = Guid.NewGuid(),
+                        Name = name
+                    };
+
+                    command.Parameters.AddWithValue("@id", category.ID);                    
                     command.Parameters.AddWithValue("@name", category.Name);
-                    command.Parameters.AddWithValue("@description", category.Description);
+                    command.Parameters.AddWithValue("@userid", UserID);
                     command.ExecuteNonQuery();
 
                     return category;
@@ -51,28 +57,26 @@ namespace TheNote.DataLayer.Sql
             }
         }
 
-        public Category Get(Guid id)
+        public IEnumerable<Category> GetUsersCategories(Guid userID)
         {
             using (var sqlConnection = new SqlConnection(_connectionString))
             {
                 sqlConnection.Open();
                 using (var command = sqlConnection.CreateCommand())
                 {
-                    command.CommandText = "select id, name from categories where id = @id";
-                    command.Parameters.AddWithValue("@id", id);
+                    command.CommandText = "select id, name from categories where userid = @userid";
+                    command.Parameters.AddWithValue("@userid", userID);
 
                     using (var reader = command.ExecuteReader())
                     {
-                        if (!reader.Read())
-                            throw new ArgumentException($"Категория с id {id} не найден");
-
-                        var category = new Category
+                        while (reader.Read())
                         {
-                            ID = reader.GetGuid(reader.GetOrdinal("id")),
-                            Name = reader.GetString(reader.GetOrdinal("name"))
-                        };
-
-                        return category;
+                            yield return new Category
+                            {
+                                Name = reader.GetString(reader.GetOrdinal("name")),
+                                ID = reader.GetGuid(reader.GetOrdinal("id"))
+                            };
+                        }
                     }
                 }
             }

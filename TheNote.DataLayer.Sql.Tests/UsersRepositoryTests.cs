@@ -22,7 +22,8 @@ namespace TheNote.DataLayer.Sql.Tests
             //arrange
             var user = new User
             {
-                FirstName = "test"
+                FirstName = "test",
+                LastName = "test"
             };
 
             //act
@@ -35,6 +36,8 @@ namespace TheNote.DataLayer.Sql.Tests
 
             //asserts
             Assert.AreEqual(result.FirstName, userFromDb.FirstName);
+            Assert.AreEqual(result.LastName, userFromDb.LastName);
+            
         }
 
         [TestCleanup]

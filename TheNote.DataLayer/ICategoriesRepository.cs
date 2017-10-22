@@ -10,9 +10,11 @@ namespace TheNote.DataLayer
 {
     public interface ICategoriesRepository
     {
-        Category Create(Category category);
+        Category Create(Guid UserID, string name);
+
         void Delete(Guid ID);
-        Category Get(Category category);
+
+        IEnumerable<Category> GetUsersCategories(Guid UserID);
 
     }
 }

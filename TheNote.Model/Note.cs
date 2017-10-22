@@ -16,7 +16,7 @@ namespace TheNote.Model
 
         public DateTime Create { get; set; }
 
-        public DateTime Change { get; set; }
+        public DateTime Update { get; set; }
 
         public User Owner { get; set; }
 

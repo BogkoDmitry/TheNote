@@ -1,0 +1,2 @@
+D:\work\TheNote\TheNote.DataLayer.Sql.Tests\obj\Debug\TheNote.DataLayer.Sql.Tests.csprojResolveAssemblyReference.cache
+D:\work\TheNote\TheNote.DataLayer.Sql.Tests\obj\Debug\TheNote.DataLayer.Sql.Tests.csproj.CoreCompileInputs.cache

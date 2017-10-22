@@ -1,0 +1,1 @@
+D:\work\TheNote\TheNote.DataLayer\obj\Debug\TheNote.DataLayer.csproj.CoreCompileInputs.cache
